@@ -106,7 +106,7 @@ resource "aws_lambda_function" "sqs_mailer" {
   handler          = "sqs_mailer.lambda_handler"
   runtime          = "python3.6"
   timeout          = 10
-  source_code_hash = "${base64sha256("lambda/sqs_mailer.zip")}"
+  source_code_hash = "${base64sha256("${path.module}/lambda/sqs_mailer.zip")}"
   environment {
     variables = {
       sender = var.sender
