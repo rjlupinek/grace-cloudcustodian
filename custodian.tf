@@ -53,7 +53,8 @@ resource "null_resource" "custodian_initialization_function" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ${path.module} & ./scripts/init.sh"
+    working_dir = "${path.module}"
+    command = "./scripts/init.sh"
   }
 }
 
@@ -94,7 +95,8 @@ resource "null_resource" "sqs_lambda_functions" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ${path.module} & ./scripts/zip_files.sh"
+    working_dir = "${path.module}"
+    command = "./scripts/zip_files.sh"
   }
 }
 
@@ -127,7 +129,8 @@ resource "null_resource" "cc_lambda_functions" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "cd ${path.module} & ./scripts/run_policies.sh"
+    working_dir = "${path.module}"
+    command = "./scripts/run_policies.sh"
   }
 }
 
