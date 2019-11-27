@@ -1,7 +1,6 @@
 cd lambda
 virtualenv -p python3 venv 
-ls
-. venv/bin/activate 
+source venv/bin/activate 
 pip3 install boto3 
 pip3 freeze > requirements.txt 
 cd venv/lib/*/site-packages/ 
