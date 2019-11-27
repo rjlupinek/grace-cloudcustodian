@@ -102,7 +102,7 @@ resource "null_resource" "sqs_lambda_functions" {
 
 resource "aws_lambda_function" "sqs_mailer" {
   depends_on       = [null_resource.sqs_lambda_functions]
-  filename         = "lambda/sqs_mailer.zip"
+  filename         = "${path.module}/lambda/sqs_mailer.zip"
   function_name    = "sqs_mailer"
   role             = aws_iam_role.iam_for_sqs.arn
   handler          = "sqs_mailer.lambda_handler"
