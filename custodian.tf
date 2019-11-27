@@ -48,12 +48,12 @@ resource "template_dir" "policy" {
 }
 
 resource "null_resource" "custodian_initialization_function" {
-  depends_on = ["template_dir.lambda"]
+  depends_on = [template_dir.lambda]
   triggers = {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    working_dir = "${path.module}"
+    working_dir = path.module
     command = "./scripts/init.sh"
   }
 }
@@ -90,21 +90,21 @@ resource "aws_iam_role_policy_attachment" "lambda_sqs_attachment" {
 }
 
 resource "null_resource" "sqs_lambda_functions" {
-  depends_on = ["template_dir.lambda"]
+  depends_on = [template_dir.lambda]
   triggers = {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    working_dir = "${path.module}"
+    working_dir = path.module
     command = "./scripts/zip_files.sh"
   }
 }
 
 resource "aws_lambda_function" "sqs_mailer" {
-  depends_on       = ["null_resource.sqs_lambda_functions"]
+  depends_on       = [null_resource.sqs_lambda_functions]
   filename         = "lambda/sqs_mailer.zip"
   function_name    = "sqs_mailer"
-  role             = "${aws_iam_role.iam_for_sqs.arn}"
+  role             = aws_iam_role.iam_for_sqs.arn
   handler          = "sqs_mailer.lambda_handler"
   runtime          = "python3.6"
   timeout          = 10
@@ -118,18 +118,18 @@ resource "aws_lambda_function" "sqs_mailer" {
 
 resource "aws_lambda_event_source_mapping" "sqs_event" {
   batch_size       = 1
-  event_source_arn = "${aws_sqs_queue.cc_queue.arn}"
+  event_source_arn = aws_sqs_queue.cc_queue.arn
   enabled          = true
-  function_name    = "${aws_lambda_function.sqs_mailer.arn}"
+  function_name    = aws_lambda_function.sqs_mailer.arn
 }
 
 resource "null_resource" "cc_lambda_functions" {
-  depends_on = ["template_dir.policy"]
+  depends_on = [template_dir.policy]
   triggers = {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    working_dir = "${path.module}"
+    working_dir = path.module
     command = "./scripts/run_policies.sh"
   }
 }
