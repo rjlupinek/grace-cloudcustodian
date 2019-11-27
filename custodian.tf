@@ -53,7 +53,7 @@ resource "null_resource" "custodian_initialization_function" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "scripts/init.sh"
+    command = "${path.module}/scripts/init.sh"
   }
 }
 
@@ -94,7 +94,7 @@ resource "null_resource" "sqs_lambda_functions" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "scripts/zip_files.sh"
+    command = "${path.module}/scripts/zip_files.sh"
   }
 }
 
@@ -109,7 +109,7 @@ resource "aws_lambda_function" "sqs_mailer" {
   source_code_hash = "${base64sha256("${path.module}/lambda/sqs_mailer.zip")}"
   environment {
     variables = {
-      sender = var.sender
+      sender = var.sender 
     }
   }
 }
@@ -127,7 +127,7 @@ resource "null_resource" "cc_lambda_functions" {
     build_number = "${timestamp()}"
   }
   provisioner "local-exec" {
-    command = "scripts/run_policies.sh"
+    command = "${path.module}/scripts/run_policies.sh"
   }
 }
 
